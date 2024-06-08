@@ -1,27 +1,17 @@
-const path = require("path");
-
 const express = require("express");
 const bodyParser = require("body-parser");
-
-const errorController = require("./controllers/error");
+const cors = require("cors");
 
 const app = express();
+
 const sequelize = require("./util/database");
+const userRoutes = require("./routes/user");
 
-app.set("view engine", "ejs");
-app.set("views", "views");
-
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const Product = require("./models/product");
-
+app.use(cors());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRoutes);
-app.use(shopRoutes);
-
-app.use(errorController.get404);
+app.use("/users", userRoutes);
 
 sequelize
   .sync()
@@ -32,5 +22,3 @@ sequelize
   .catch((err) => {
     console.log(err);
   });
-
-
